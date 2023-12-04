@@ -62,3 +62,7 @@ w
 G.idea/sonarlint/issuestore/9/e/9ea3586a5db2007382b593701fc734536379d594,4\f\4f07d202c60ebd0da3f4dbf9425379169adb661e
 |
 Lapp/src/androidTest/java/com/example/libraryapp/ExampleInstrumentedTest.java,6\f\6fce1cecb5e36b48d1845af2718f7381d2010eaa
+l
+<app/src/main/java/com/example/libraryapp/BookRepository.java,b\6\b681bc3d971619542f2aaa360f167ab1769b8d2d
+k
+;app/src/main/java/com/example/libraryapp/BookViewModel.java,a\8\a811da0eddd320638d9e1586774b69dae662a535
