@@ -66,3 +66,5 @@ l
 <app/src/main/java/com/example/libraryapp/BookRepository.java,b\6\b681bc3d971619542f2aaa360f167ab1769b8d2d
 k
 ;app/src/main/java/com/example/libraryapp/BookViewModel.java,a\8\a811da0eddd320638d9e1586774b69dae662a535
+n
+>app/src/main/java/com/example/libraryapp/EditBookActivity.java,7\3\73fa435f4f8d878bdb7f3297025fe820e89fc096

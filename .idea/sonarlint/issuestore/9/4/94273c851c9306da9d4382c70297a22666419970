@@ -1,3 +1,7 @@
 
 µ
-java:S6548"˜A Singleton implementation was detected. Make sure the use of the Singleton pattern is required and the implementation is the right one for the context.(¥£š48ÊŒÓ‚Â1
+java:S6548"˜A Singleton implementation was detected. Make sure the use of the Singleton pattern is required and the implementation is the right one for the context.(¥£š48ƒ¨Ã1
+O
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8¿åº©Ã1
+e
+java:S1128"CRemove this unused import 'androidx.sqlite.db.SupportSQLiteCompat'.(ËØ§ªùÿÿÿÿ8¿åº©Ã1
