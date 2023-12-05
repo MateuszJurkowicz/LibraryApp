@@ -47,7 +47,7 @@
     <string name="hint_book_author">Author...</string>
     <string name="button_save">Save</string>
     <string name="something_wrong">Book not saved.</string>
-    <string name="book_added">Added book successfully</string>
+    <string name="book_added">Book has been added</string>
     <string name="book_updated">Book has been updated</string>
     <string name="book_archived">Book has been archived</string>
 </resources>

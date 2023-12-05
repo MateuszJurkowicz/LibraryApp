@@ -23,6 +23,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -73,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
         bookViewModel.findAll().observe(this, adapter::setBooks);
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
+    private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private final TextView bookTitleTextView;
         private final TextView bookAuthorTextView;
         private Book book;
@@ -146,11 +148,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onLongClick(View v) {
-            bookViewModel.delete(book);
+            //bookViewModel.delete(book);
             return false;
         }
 
-        @Override
+        /*@Override
         public boolean onTouch(View v, MotionEvent event) {
             Log.d("ON TOUCH", "Odpalam swipe");
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -158,10 +160,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             return false;
-        }
+        }*/
     }
 
-    private class BookAdapter extends RecyclerView.Adapter<BookHolder>{
+    private class BookAdapter extends RecyclerView.Adapter<BookHolder> {
         private List<Book> books;
 
         @NonNull
@@ -192,6 +194,25 @@ public class MainActivity extends AppCompatActivity {
         void setBooks(List<Book> books) {
             this.books = books;
             notifyDataSetChanged();
+        }
+    }
+
+    public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
+        private final BookAdapter adapter;
+
+        public SwipeToDeleteCallback(BookAdapter adapter) {
+            super(0, ItemTouchHelper.RIGHT);
+            this.adapter = adapter;
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            Snackbar.make(findViewById(R.id.coordinator_layout), getString(R.string.book_archived), Snackbar.LENGTH_LONG).show();
         }
     }
 
