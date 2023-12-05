@@ -46,6 +46,8 @@
     <string name="hint_book_title">Title...</string>
     <string name="hint_book_author">Author...</string>
     <string name="button_save">Save</string>
-    <string name="empty_not_saved">Book not saved because there are empty fields.</string>
+    <string name="something_wrong">Book not saved.</string>
     <string name="book_added">Added book successfully</string>
+    <string name="book_updated">Book has been updated</string>
+    <string name="book_archived">Book has been archived</string>
 </resources>

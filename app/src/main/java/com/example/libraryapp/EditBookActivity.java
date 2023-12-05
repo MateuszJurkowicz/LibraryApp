@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,11 +22,17 @@ public class EditBookActivity extends AppCompatActivity {
 
         editTitleEditText = findViewById(R.id.edit_book_title);
         editAuthorEditText = findViewById(R.id.edit_book_author);
-
         final Button button = findViewById(R.id.button_save);
+
+        if (getIntent().hasExtra((EXTRA_EDIT_BOOK_TITLE)) && getIntent().hasExtra(EXTRA_EDIT_BOOK_AUTHOR)) {
+            String title = getIntent().getStringExtra(EXTRA_EDIT_BOOK_TITLE);
+            String author = getIntent().getStringExtra(EXTRA_EDIT_BOOK_AUTHOR);
+            editTitleEditText.setText(title);
+            editAuthorEditText.setText(author);
+        }
         button.setOnClickListener(view -> {
             Intent replyIntent = new Intent();
-            if(TextUtils.isEmpty(editTitleEditText.getText()) || TextUtils.isEmpty(editAuthorEditText.getText())) {
+            if (TextUtils.isEmpty(editTitleEditText.getText()) || TextUtils.isEmpty(editAuthorEditText.getText())) {
                 setResult(RESULT_CANCELED, replyIntent);
             } else {
                 String title = editTitleEditText.getText().toString();
@@ -34,6 +41,7 @@ public class EditBookActivity extends AppCompatActivity {
                 replyIntent.putExtra(EXTRA_EDIT_BOOK_AUTHOR, author);
                 setResult(RESULT_OK, replyIntent);
             }
+
             finish();
         });
     }

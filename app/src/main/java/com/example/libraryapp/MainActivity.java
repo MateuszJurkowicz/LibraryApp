@@ -12,9 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.core.view.WindowCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -34,24 +37,28 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final int NEW_BOOK_ACTIVITY_REQUEST_CODE = 1;
+    public static final int EDIT_BOOK_ACTIVITY_REQUEST_CODE = 2;
     private BookViewModel bookViewModel;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private Book editedBook = null;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_BOOK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Book book = new Book(data.getStringExtra(EditBookActivity.EXTRA_EDIT_BOOK_TITLE),
-                    data.getStringExtra(EditBookActivity.EXTRA_EDIT_BOOK_AUTHOR));
+            Book book = new Book(data.getStringExtra(EditBookActivity.EXTRA_EDIT_BOOK_TITLE), data.getStringExtra(EditBookActivity.EXTRA_EDIT_BOOK_AUTHOR));
             bookViewModel.insert(book);
-            Snackbar.make(findViewById(R.id.coordinator_layout), getString(R.string.book_added),
-                    Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.coordinator_layout), getString(R.string.book_added), Snackbar.LENGTH_LONG).show();
+        } else if (requestCode == EDIT_BOOK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            editedBook.setTitle(data.getStringExtra(EditBookActivity.EXTRA_EDIT_BOOK_TITLE));
+            editedBook.setAuthor(data.getStringExtra(EditBookActivity.EXTRA_EDIT_BOOK_AUTHOR));
+            bookViewModel.update(editedBook);
+            Snackbar.make(findViewById(R.id.coordinator_layout), getString(R.string.book_updated), Snackbar.LENGTH_LONG).show();
         } else {
-            Snackbar.make(findViewById(R.id.main_layout),
-                    getString(R.string.empty_not_saved),
-                    Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.main_layout), getString(R.string.something_wrong), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -65,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         final BookAdapter adapter = new BookAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
 
         bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
         bookViewModel.findAll().observe(this, adapter::setBooks);
@@ -104,23 +113,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class BookHolder extends RecyclerView.ViewHolder {
-        private TextView bookTitleTextView;
-        private TextView bookAuthorTextView;
+    private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
+        private final TextView bookTitleTextView;
+        private final TextView bookAuthorTextView;
+        private Book book;
 
         public BookHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.book_list_item, parent, false));
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+
             bookTitleTextView = itemView.findViewById(R.id.textView_title_list_item);
             bookAuthorTextView = itemView.findViewById(R.id.textView_author_list_item);
+
         }
 
         public void bind(Book book) {
+            this.book = book;
             bookTitleTextView.setText(book.getTitle());
             bookAuthorTextView.setText(book.getAuthor());
         }
+
+        @Override
+        public void onClick(View v) {
+            editedBook = book;
+            Intent intent = new Intent(MainActivity.this, EditBookActivity.class);
+            intent.putExtra(EditBookActivity.EXTRA_EDIT_BOOK_TITLE, book.getTitle());
+            intent.putExtra(EditBookActivity.EXTRA_EDIT_BOOK_AUTHOR, book.getAuthor());
+            startActivityForResult(intent, EDIT_BOOK_ACTIVITY_REQUEST_CODE);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            bookViewModel.delete(book);
+            return false;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            Log.d("ON TOUCH", "Odpalam swipe");
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                Snackbar.make(findViewById(R.id.coordinator_layout), getString(R.string.book_archived), Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+            return false;
+        }
     }
 
-    private class BookAdapter extends RecyclerView.Adapter<BookHolder> {
+    private class BookAdapter extends RecyclerView.Adapter<BookHolder>{
         private List<Book> books;
 
         @NonNull
@@ -153,4 +194,5 @@ public class MainActivity extends AppCompatActivity {
             notifyDataSetChanged();
         }
     }
+
 }
